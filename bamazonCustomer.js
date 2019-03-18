@@ -2,6 +2,7 @@
 //what product id would you like to buy?
 //how many units of this product would you like?
 var mysql = require("mysql");
+var inquirer = require("inquirer");
 
 // Create a "Prompt" with a series of questions.
 var connection = mysql.createConnection({
@@ -17,33 +18,22 @@ var connection = mysql.createConnection({
     password: "",
     database: "bamazon_db",
 });
-// connection.connect(function (err) {
-//     if (err) throw err;
-//     connection.query("SELECT * FROM products", function (err, data) {
-//         if (err) throw err;
-//         console.log(data)
-//         // if (err) throw err;
-//         console.log(data);
-//         connection.query("SELECT * FROM products", function (err, data) {
-//             if (err) throw err;
-//             console.log(data);
-//             connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: -5 }, { product_name: answer.item }], function (err, data) {
-//                 if (err) throw err;
-
-//                 connection.end();
-//             })
-//         })
-
-//     })
-// })
 connection.connect(function (err) {
     if (err) throw err;
-    runSearch();
+    showProducts();
 });
+
+function showProducts(){
+    connection.query("SELECT * FROM products", function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        runSearch();
+    })
+}
 
 function runSearch() {
     inquirer
-        .prompt(
+        .prompt([
             {
                 name: "itemID",
                 type: "input",
@@ -51,22 +41,27 @@ function runSearch() {
 
             },
             {
+                name: "quantity",
                 type: "input",
                 message: "How many would you like to purchase?",
-                name: "quantity"
             }
-        )
+        ])
         .then(function (answer) {
-            connection.query("SELECT * FROM products", function (err, data) {
+            connection.query("SELECT * FROM products WHERE id=" + answer.itemID, function (err, data) {
                 if (err) throw err;
-                // var newQuant = answer.stock_quantity; // quantity for updated quantity in database
-
+                if (answer.quantity < data[0].stock_quantity) {
+                    var newQuant = data[0].stock_quantity - answer.quantity;
+                    console.log("You purchased "+answer.quantity+" of these!");
                     connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuant }, { id: answer.itemID }], function (err, data) {
                         if (err) throw err;
-
-                        connection.end();
+                        // connection.query("SELECT * FROM products WHERE id=" + answer.itemID, function (err, data) {
+                        //     console.log(data[0]);
+                        // })
                     })
-
+                } else {
+                    console.log("Not enough inventory, try again later!")
+                }
+                showProducts();
             })
         });
 }
