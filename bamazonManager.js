@@ -1,19 +1,3 @@
-//* List a set of menu options:
-
-// ***View Products for Sale
-// list every available item id, name, price, quantity
-
-// ***View Low Inventory
-// list all items in inventory with quantity less than 5
-
-// ***Add to Inventory
-// app should display a prompt that will let the manage 
-// "add more" of any item curently in the store 
-
-// ***Add New Product
-// should allow the manager to add a completely new 
-// product to the store
-
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
@@ -29,8 +13,8 @@ var connection = mysql.createConnection({
 
     // Your password
     password: "",
-    database: "bamazon_db",
-});
+    database: "bamazon_db"
+})
 startManager();
 function startManager() {
     connection.connect(function (err) {
@@ -43,11 +27,10 @@ function showOptions() {
     inquirer
         .prompt(
             {
-                name: "menuOptions",
+                name: "menuOption",
                 type: 'list',
                 message: "Please select from the following menu:",
                 choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
-
             }
         )
         .then(function (answer) {
@@ -55,14 +38,19 @@ function showOptions() {
                 connection.query("SELECT * FROM products", function (err, data) {
                     if (err) throw err;
                     console.table(data);
-                    startManager();
+                    showOptions();
                 })
             }
             else if (answer.menuOption === "View Low Inventory") {
                 connection.query("SELECT * FROM products WHERE stock_quantity BETWEEN '0' AND '5'", function (err, data) {
                     if (err) throw err;
-                    console.table(data);
-                    startManager();
+                    if (data.length < 1 || data == undefined) {
+                        console.log("There aren't any products with a low inventory!")
+                    }
+                    else {
+                        console.table(data)
+                    }
+                    showOptions();
                 })
             }
             else if (answer.menuOption === "Add to Inventory") {
@@ -83,18 +71,17 @@ function showOptions() {
                         connection.query("SELECT * FROM products WHERE id=" + answer.id, function (err, data) {
                             if (err) throw err;
                             console.table(data);
-                            var newQuant = data[0].stock_quantity + answer.addUnits;
+                            var quant = data[0].stock_quantity + answer.addUnits;
+                            var newQuant = parseInt(quant);
                             connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuant }, { id: answer.id }], function (err, data) {
                                 if (err) throw err;
                                 console.log("You have updated the stock quantity!");
-                                startManager();
+                                showOptions();
                             })
                         })
                     })
-
             }
             else if (answer.menuOption === "Add New Product") {
-                connection.end();
                 inquirer
                     .prompt([
                         {
@@ -119,14 +106,11 @@ function showOptions() {
                         },
                     ])
                     .then(function (answer) {
-                        connection.connect(function (err) {
+                        connection.query("INSERT INTO products SET ?", { product_name: answer.productName, department_name: answer.department, price: answer.price, stock_quantity: answer.units }, function (err, data) {
                             if (err) throw err;
-                            connection.query("INSERT INTO products SET ?", { product_name: answer.productName, department: answer.department, price: answer.price, stock_quantity: answer.units }, function (err, data) {
-                                if (err) throw err;
-                                console.log("You have added a product!");
-                                startManager();
-                            })
-                        });
+                            console.log("You have added a product!");
+                            showOptions();
+                        })
                     })
             }
         });
