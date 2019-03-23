@@ -32,9 +32,9 @@ Lindsay Campbell - All content - Freelance Developer
 ### Make a purchase as a Customer
 ![Customer](/images/screenshot.png)
 ### View Products, View Low Inventory, Add to Inventory
-![Manager](/images/screenshot2.png)
+![Manager](/images/screenshot 2.png)
 ### Add New Product
-![Manager2](/images/screenshot3.png)
+![Manager2](/images/screenshot 3.png)
 
 
 
