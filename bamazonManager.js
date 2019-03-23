@@ -71,9 +71,8 @@ function showOptions() {
                         connection.query("SELECT * FROM products WHERE id=" + answer.id, function (err, data) {
                             if (err) throw err;
                             console.table(data);
-                            var quant = data[0].stock_quantity + answer.addUnits;
-                            var newQuant = parseInt(quant);
-                            connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuant }, { id: answer.id }], function (err, data) {
+                            var quant = parseInt(data[0].stock_quantity) + parseInt(answer.addUnits);
+                            connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: quant }, { id: answer.id }], function (err, data) {
                                 if (err) throw err;
                                 console.log("You have updated the stock quantity!");
                                 showOptions();

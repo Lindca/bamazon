@@ -1,6 +1,6 @@
 # bamazon
 
-This program is an app that helps you keep track of products for sale and  
+This program is an app that helps you keep track of products for sale and puts them in a database. This can be used by a customer and also by someone managing their products for sale, this can also be adapted to be used in a browser ver easily.
 
 ## Getting Started:
 Clone my repository to your computer and open ypour terminal then enter in one of the following:
@@ -28,9 +28,10 @@ You should be able to run my program just by downloading the files given.
 ## Authors:
 Lindsay Campbell - All content - Freelance Developer
 
-## Images:
-### Screenshots
-![spotify-this-song](/images/spotify.png)
+## Screenshots:
+![Customer](/images/screenshot.png)
+![Manager](/images/screenshot2.png)
+![Manager](/images/screenshot3.png)
 
 
 
