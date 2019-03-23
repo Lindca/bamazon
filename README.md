@@ -29,9 +29,12 @@ You should be able to run my program just by downloading the files given.
 Lindsay Campbell - All content - Freelance Developer
 
 ## Screenshots:
+### Make a purchase as a Customer
 ![Customer](/images/screenshot.png)
+### View Products, View Low Inventory, Add to Inventory
 ![Manager](/images/screenshot2.png)
-![Manager](/images/screenshot3.png)
+### Add New Product
+![Manager2](/images/screenshot3.png)
 
 
 
